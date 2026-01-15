@@ -6,6 +6,15 @@ from app.schemas.skill import SkillCreate, SkillOut
 
 router = APIRouter(prefix="/skills", tags=["Skills"])
 
+# ✅ CREATE SKILL
+@router.post("/", response_model=SkillOut)
+def create_skill(skill: SkillCreate, db: Session = Depends(get_db)):
+    db_skill = Skill(**skill.dict())
+    db.add(db_skill)
+    db.commit()
+    db.refresh(db_skill)
+    return db_skill
+
 @router.put("/{skill_id}", response_model=SkillOut)
 def update_skill(
     skill_id: int,
